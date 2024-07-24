@@ -1,0 +1,158 @@
+{% extends 'news/base.html' %}
+{% load static %}
+{% load hitcount_tags %}
+
+{% block title %} {{ news.title }} {% endblock title %}
+
+{% block content %}
+
+    <div class="content">
+        <h1 class="centered-h1">{{ news.title }}</h1>
+        <h5>{{ news.publish_time }} | <i class="fa fa-eye" aria-hidden="true"></i>
+            {% get_hit_count for news %} | Izohlar soni: {{ comment_count }}
+        </h5>
+
+        <img src="{{ news.image.url }}" alt="" class="centered-image">
+        <p class="centered-body">{{ news.body | linebreaks }}</p>
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+        <div class="card-footer text-center">
+            <a href="{% url 'news_update' news.slug %}">Tahrirlash</a> |
+            <a href="{% url 'news_delete' news.slug %}">O'chirish</a>
+        </div>
+        {% endif %}<br>
+
+        <h3>Bu yangilikka {{ comment_count }} ta izoh qoldirilgan</h3>
+        {% for comment in comments %}
+        <div class="comments">
+            <p class="font-weight-bold">
+                {{ comment.user }}
+                <span class="text-muted font-weight-normal">
+                    {{ comment.created_time }}
+                </span>
+            </p>
+            <p>{{ comment.body | linebreaks }}</p>
+        </div>
+        {% endfor %}
+
+        {% if user.is_authenticated %}
+        <div class="comment-form">
+            <h3>Izoh qoldirish</h3>
+            <form method="POST">{% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit">Yuborish</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="auth-message">
+            <p class="text-danger">Faqatgina ro'yhatdan o'tgan foydalanuvchilar izoh qoldirishlari mumkin</p>
+            <p>Izoh qoldirish uchun <a href="{% url 'user_register' %}">ro'yhatdan o'ting</a>
+                yoki <a href="{% url 'login' %}">saytga kiring</a></p>
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock content %}
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>News Detail Page</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            line-height: 1.6;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            background-color: #f4f4f4;-->
+<!--            color: #333;-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--        }-->
+<!--        .content {-->
+<!--            max-width: 800px;-->
+<!--            width: 100%;-->
+<!--            padding: 20px;-->
+<!--        }-->
+<!--        .centered-h1 {-->
+<!--            text-align: center;-->
+<!--            color: #444;-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--        .centered-image {-->
+<!--            display: block;-->
+<!--            margin: 20px auto;-->
+<!--            max-width: 100%;-->
+<!--            height: auto;-->
+<!--        }-->
+<!--        .centered-body {-->
+<!--            margin: 20px 0;-->
+<!--            padding: 20px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+<!--        .card-footer {-->
+<!--            margin: 20px 0;-->
+<!--            padding: 10px;-->
+<!--            background-color: #fff;-->
+<!--            border-top: 1px solid #eee;-->
+<!--            text-align: center;-->
+<!--        }-->
+<!--        .card-footer a {-->
+<!--            color: #007bff;-->
+<!--            text-decoration: none;-->
+<!--        }-->
+<!--        .card-footer a:hover {-->
+<!--            text-decoration: underline;-->
+<!--        }-->
+<!--        .comments {-->
+<!--            margin: 20px 0;-->
+<!--            padding: 10px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+<!--        .font-weight-bold {-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        .font-weight-normal {-->
+<!--            font-weight: normal;-->
+<!--        }-->
+<!--        .text-muted {-->
+<!--            color: #6c757d;-->
+<!--        }-->
+<!--        .comment-form {-->
+<!--            margin: 20px 0;-->
+<!--            padding: 20px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+<!--        .comment-form h3 {-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        .auth-message {-->
+<!--            margin: 20px 0;-->
+<!--            padding: 20px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--            text-align: center;-->
+<!--        }-->
+<!--        .text-danger {-->
+<!--            color: #dc3545;-->
+<!--        }-->
+<!--        .auth-message a {-->
+<!--            color: #007bff;-->
+<!--            text-decoration: none;-->
+<!--        }-->
+<!--        .auth-message a:hover {-->
+<!--            text-decoration: underline;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    -->
+<!--</body>-->
+<!--</html>-->
